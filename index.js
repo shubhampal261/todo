@@ -1,0 +1,49 @@
+import { todoRouter } from './todo.js';
+import express from 'express';
+import { MongoClient } from 'mongodb';
+
+export const server = express();
+export let mongoClient;
+
+server.use(express.json({}));
+
+server.use('/todo', todoRouter);
+
+initializeDb();
+
+// GET POST PUT DELETE PATCH
+
+// https://locahost:8080/todo
+
+server.listen(8080, 'localhost', function() {
+  console.log("Started");
+});
+
+// module.exports = server;
+
+// mongodb://crm:crm@localhost:27018/crm-core-db?retryWrites=true&writeConcern=majority&useUnifiedTopology=true
+
+// mongodb+srv://shubham:shubham.pal@cluster0.tifj7.mongodb.net/?retryWrites=true&w=majority
+
+async function initializeDb() {
+  mongoClient = await MongoClient.connect('mongodb+srv://shubham:shubham.pal@cluster0.tifj7.mongodb.net/?retryWrites=true&w=majority')
+  .then((client) => {
+    console.log('db connection successful');
+    return client;
+  })
+  .catch((err) => {
+    console.log('Error while db connection');
+    return null
+  });
+  if (mongoClient == null) {
+    return res.sendStatus(500);
+  }
+  return mongoClient;
+}
+
+export async function getDb() {
+  if (!mongoClient) {
+    await initializeDb();
+  }
+  return mongoClient;
+}
