@@ -36,7 +36,7 @@ async function initializeDb() {
     return null
   });
   if (mongoClient == null) {
-    return res.sendStatus(500);
+    return null
   }
   return mongoClient;
 }
