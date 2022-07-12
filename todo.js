@@ -46,7 +46,67 @@ todoRouter.get('/url', async function(req, res) {
   .project({ "name": 0 })
   .toArray();
 
-  return res.status(200).json(records);
+  const aggregationSteps = [
+    {
+      "$match": dbQuery
+    },
+    {
+      "$sort": sortCOnfig
+    },
+    {
+      "$skip": offset
+    },
+    {
+      "$limit": pageSize
+    },
+    {
+      "$project": { "name": 0 }
+    }
+  ];
+
+  // const aggregationSteps = [
+  //   {
+  //     "$match": dbQuery
+  //   },
+  //   {
+  //     "$addFields": {
+  //       "idStr": { "$toString": "$_id" }
+  //     },
+  //   },
+  //   {
+  //     "$facet": {
+  //       "records": [
+  //         {
+  //           "$sort": sortCOnfig
+  //         },
+  //         {
+  //           "$skip": offset
+  //         },
+  //         {
+  //           "$limit": pageSize
+  //         },
+  //         {
+  //           "$project": { "name": 0 }
+  //         }
+  //       ],
+  //       "totalCount": [
+  //         {
+  //           "$count": "tempTotalCount"
+  //         }
+  //       ]
+  //     }
+  //   }
+  // ];
+
+  const records1 = await mongoClient.db('todo-db').collection('todo')
+    .aggregate(aggregationSteps)
+    .toArray();
+
+
+  return res.status(200).json({
+    recordsFromFind: records,
+    recordsFromAggregate: records1
+  });
 
 });
 
