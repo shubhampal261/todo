@@ -35,6 +35,9 @@ async function initializeDb() {
     console.log('Error while db connection');
     return null
   });
+  if (mongoClient == null) {
+    return null
+  }
   return mongoClient;
 }
 
