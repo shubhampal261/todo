@@ -1,6 +1,6 @@
 import { ObjectID } from 'bson';
 import express from 'express';
-import { getDb } from './index.js';
+import { getDb } from './index';
 
 export const todoRouter = express.Router();
 

@@ -1,9 +1,9 @@
-import { todoRouter } from './todo.js';
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import { todoRouter } from './todo';
 
 export const server = express();
-export let mongoClient;
+export let mongoClient: MongoClient | null;
 
 server.use(express.json({}));
 
@@ -41,9 +41,12 @@ async function initializeDb() {
   return mongoClient;
 }
 
-export async function getDb() {
+export async function getDb(): Promise<MongoClient> {
   if (!mongoClient) {
     await initializeDb();
+  }
+  if (!mongoClient) {
+    throw Error('db connection failed');
   }
   return mongoClient;
 }
